@@ -14,11 +14,11 @@ const client = new RekognitionClient({
 // Nombre de la coleccion
 const collection = `${process.env.COLLECTION_NAME}`
 
-async function fetchData(object: string) {
+async function axiosData(object: string) {
   // const nextCookies = cookies()
   // const token = nextCookies.get('token')
   // console.log("cookie>>>",token?.value)
-  const res = await axios.put(`http://172.18.6.138:5005/api/v1/rrhh/empleados/fichar/${object}`)
+  const res = await axios.put(`http://172.18.0.167:9005/api/v1/rrhh/empleados/fichar/${object}`)
     .then(response => response.data)
     .catch(error => error)
   return res
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       })
       .catch(error => console.log(error))
     const { id, similarity, toDay, docket }: any = resp
-    const fetch = await fetchData(docket)
+    const fetch = await axiosData(docket)
     const { nombre }: any = fetch
     if (id && similarity && toDay && nombre && docket) {
       return new Response(JSON.stringify({

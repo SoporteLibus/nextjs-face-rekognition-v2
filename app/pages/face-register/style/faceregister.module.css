@@ -1,0 +1,39 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 30px;
+    min-height: 100vh;
+}
+
+.searchBox {
+    background-color: #ecedf6;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 12px;
+    border-radius: 8px;
+}
+
+.searchBox form {
+    display: flex;
+    flex-direction: row;
+}
+
+.searchBox form>input {
+    background-color: transparent;
+    font: inherit;
+    border: none;
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+.searchBox form>input::placeholder {
+    color: #B3B4C0;
+}
+
+.searchBox form>input:focus {
+    outline: none;
+}
