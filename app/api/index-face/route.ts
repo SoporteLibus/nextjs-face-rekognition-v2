@@ -17,6 +17,7 @@ en la DB de Azure rekognition */
 export async function POST(request: Request) {
   const { docket, imageSrc }: any | null | string = await request.json();
   if (imageSrc && docket) {
+  console.log("Comenzando registro de rostro...")
   // Se elimina la primera parte del string en base64 
   const base64Img = imageSrc.replace('data:image/jpeg;base64,', '');
   // Se transforma a binario para enviarlo como parametro a la api
@@ -33,10 +34,10 @@ export async function POST(request: Request) {
   const resp = await client.send(command)
     .then(data => data)
     .catch(error => error)
-  console.log("respApiIndex>>>",resp.FaceRecords)
   if (resp.FaceRecords) {
+    console.log("Rostro registrado con exito!")
     return new Response(JSON.stringify({
-        id: `${resp.FaceRecords[0].Face.ExternalImageId}`
+        docket: `${resp.FaceRecords[0].Face.ExternalImageId}`
     }),
     {
       status: 200,
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       },
     })
   } else {
+    console.log("Error en el registro del rostro!")
     return new Response(JSON.stringify({
         message: "Query failed"
     }),

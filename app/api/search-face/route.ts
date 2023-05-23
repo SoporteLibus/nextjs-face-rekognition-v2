@@ -29,7 +29,7 @@ en la DB de Azure rekognition */
 export async function POST(request: Request) {
   const { imageSrc }: any | null | string = await request.json();
   if (imageSrc) {
-    console.log("Comienzo de api search")
+    console.log("Comenzando busqueda de rostro...")
     // Se elimina la primera parte del string en base64 
     const base64Img = imageSrc.replace('data:image/jpeg;base64,', '');
     // Se transforma a binario para enviarlo como parametro a la api
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         // Si la consulta se realiza con exito, devuelve un objeto con:
         // La similitud en la busqueda, el id de rostro, el legajo y la fecha.
         if (data.FaceMatches) {
-          console.log("respApiSearch>>>",data)
+          console.log("Rostro con coinsidencias!")
           const id = `${data.FaceMatches[0].Face?.FaceId}`
           const similarity = `${data.FaceMatches[0].Similarity}`
           const docket = `${data.FaceMatches[0].Face?.ExternalImageId}`
@@ -62,35 +62,53 @@ export async function POST(request: Request) {
           return { id, similarity, toDay, docket }
         }
       })
-      .catch(error => console.log(error))
-    const { id, similarity, toDay, docket }: any = resp
-    const fetch = await axiosData(docket)
-    const { nombre }: any = fetch
-    if (id && similarity && toDay && nombre && docket) {
-      return new Response(JSON.stringify({
-        name: `${nombre}`,
-        similarity: similarity,
-        docket: `${docket}`,
-        id: id,
-        date: `${toDay}`
-      }),
-      {
-        status: 200,
-        headers: {
-          'content-type': 'application/json',
-        },
-      })
+      .catch(error => error)
+    // Validacion a la respuesta de AWS Recognition
+    if (resp.docket) {
+      const { id, similarity, toDay, docket }: any = resp
+      // Obtencion de informacion de empleados
+      const axiosResponse = await axiosData(docket)
+      const { nombre }: any = axiosResponse
+      // Validacion de respuesta de la DB
+      if (nombre) {
+        console.log("Respuesta a la consulta realizada con exito!")
+        return new Response(JSON.stringify({
+          name: `${nombre}`,
+          similarity: similarity,
+          docket: `${docket}`,
+          id: id,
+          date: `${toDay}`
+        }),
+        {
+          status: 200,
+          headers: {
+            'content-type': 'application/json',
+          },
+        })
+      } else {
+        console.log("No se pudo obtener informacion de la base de datos!")
+        return new Response(JSON.stringify({
+          error: "No estas registrado!"
+        }),
+        {
+          status: 400,
+          headers: {
+            'content-type': 'application/json',
+          },
+        })
+      }
     } else {
-      return new Response(JSON.stringify({
-        error: fetch
-      }),
-      {
-        status: 400,
-        headers: {
-          'content-type': 'application/json',
-        },
-      })
-    }
+        console.log("No se pudo obtener informacion de AWS!")
+        return new Response(JSON.stringify({
+          error: "No estas registrado!"
+        }),
+        {
+          status: 400,
+          headers: {
+            'content-type': 'application/json',
+          },
+        })
+      }
   } else {
   return new Response(JSON.stringify({
       error: 'Unauthorized',
