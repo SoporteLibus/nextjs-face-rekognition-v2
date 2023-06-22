@@ -18,9 +18,10 @@ async function axiosData(object: string) {
   // const nextCookies = cookies()
   // const token = nextCookies.get('token')
   // console.log("cookie>>>",token?.value)
-  const res = await axios.put(`https://172.18.0.167:11005/api/v1/rrhh/empleados/fichar/${object}`)
+  const res = await axios.put(`https://172.18.0.167:5006/api/v1/rrhh/empleados/fichar/${object}`)
     .then(response => response.data)
     .catch(error => error)
+  console.log(res)
   return res
 }
 

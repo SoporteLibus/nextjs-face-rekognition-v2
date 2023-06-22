@@ -87,7 +87,7 @@ export default function FaceDetect() {
           // Se inicia la busqueda en la coleccion de rostros registrados en la DB
           await axios.post("/api/search-face/", { imageSrc: screenShot })
             .then(response => alertSuccess(response.data))
-            .catch((error) => alertError(error.response.data.error + " Comunicate con RRHH"))
+            .catch((error) => alertError(error + " Comunicate con RRHH"))
         }
       } else {
         // Si no se detecta ningun rostro se resetea la variable estado
