@@ -14,12 +14,14 @@ const client = new RekognitionClient({
 // Nombre de la coleccion
 const collection = `${process.env.COLLECTION_NAME}`
 
+const baseURL = `${process.env.AXIOS_BASE_URL}`
+
 async function axiosData(object: string) {
   // const nextCookies = cookies()
   // const token = nextCookies.get('token')
   // console.log("cookie>>>",token?.value)
-  const res = await axios.put(`https://172.18.0.167:5006/api/v1/rrhh/empleados/fichar/${object}`)
-    .then(response => response.data)
+  const res = await axios.put(`${baseURL}/api/v1/rrhh/empleados/fichar/${object}`)
+    .then(response => response.data.data)
     .catch(error => error)
   console.log(res)
   return res
@@ -69,10 +71,10 @@ export async function POST(request: Request) {
       const { id, similarity, toDay, docket }: any = resp
       // Obtencion de informacion de empleados
       const axiosResponse = await axiosData(docket)
-      const { nombre }: any = axiosResponse
       // Validacion de respuesta de la DB
-      if (nombre) {
+      if (axiosResponse.nombre) {
         console.log("Respuesta a la consulta realizada con exito!")
+        const { nombre }: any = axiosResponse
         return new Response(JSON.stringify({
           name: `${nombre}`,
           similarity: similarity,
@@ -89,7 +91,9 @@ export async function POST(request: Request) {
       } else {
         console.log("No se pudo obtener informacion de la base de datos!")
         return new Response(JSON.stringify({
-          error: "No estas registrado!"
+          error: axiosResponse.response.data.error ?
+            axiosResponse.response.data.error :
+            "Error en la consulta a la DB"
         }),
         {
           status: 400,
