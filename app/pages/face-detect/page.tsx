@@ -16,6 +16,8 @@ export default function FaceDetect() {
   let request = 0;
   let estado = 0;
   let count = 0;
+  // const windowWidth: any = window.innerWidth
+  // const windowHeight: any = window.innerHeight
 
   // Funcion principal iniciada en el useEffect
   const runFaceLandmark = async () => {
@@ -143,6 +145,8 @@ export default function FaceDetect() {
       screenshotFormat="image/jpeg"
       style={{
         position: "absolute",
+        top: 0,
+        left: 0,
         textAlign: "center",
         zIndex: 999,
         width: "100vw",

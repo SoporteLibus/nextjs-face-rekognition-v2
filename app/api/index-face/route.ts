@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   if (resp.FaceRecords) {
     console.log("Rostro registrado con exito!")
     return new Response(JSON.stringify({
-        docket: `${resp.FaceRecords[0].Face.ExternalImageId}`
+      message: "Rostro Registrado con exito!"
     }),
     {
       status: 200,
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   } else {
     console.log("Error en el registro del rostro!")
     return new Response(JSON.stringify({
-        message: "Query failed"
+      error: "No se pudo registrar el rostro!"
     }),
     {
       status: 400,
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
   }
   } else {
     return new Response(JSON.stringify({
-      message: 'Body parameter error',
+      error: 'Falta parametro en el cuerpo del mensaje!',
     }),
     {
       status: 400,
