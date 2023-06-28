@@ -1,5 +1,6 @@
 import { RekognitionClient, IndexFacesCommand } from "@aws-sdk/client-rekognition";
 
+
 // Credenciales globales para la configuracion de AWS
 const client = new RekognitionClient({
   credentials: {
@@ -33,7 +34,8 @@ export async function POST(request: Request) {
   const command = new IndexFacesCommand(params);
   const resp = await client.send(command)
     .then(data => data)
-    .catch(error => error)
+    .catch((error) => error)
+  console.log(resp)
   if (resp.FaceRecords) {
     console.log("Rostro registrado con exito!")
     return new Response(JSON.stringify({
@@ -47,6 +49,7 @@ export async function POST(request: Request) {
     })
   } else {
     console.log("Error en el registro del rostro!")
+
     return new Response(JSON.stringify({
       error: "No se pudo registrar el rostro!"
     }),
