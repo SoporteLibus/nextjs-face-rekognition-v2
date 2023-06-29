@@ -83,13 +83,14 @@ export default function FaceDetect() {
         /* Si el rostro es leido correctamente 20 veces , los parametros son 
         los indicados y la consulta a la api de AWS aun no se realizo */
         if (estado > 20 && nariz > 6 && request === 0) {
-          console.log("Levantaste la cabeza!!!")
           // La consulta ya fue realizada
           request += 1
           // Se inicia la busqueda en la coleccion de rostros registrados en la DB
           await axios.post("/api/search-face/", { imageSrc: screenShot })
             .then(response => alertSuccess(response.data))
-            .catch((error) => alertError(error + " Comunicate con RRHH"))
+            .catch(error => {
+              error.response.data.error ? alertError(error.response.data.error + `, Comunicate con RRHH`) : alertError("Comunicate con RRHH")
+            })
         }
       } else {
         // Si no se detecta ningun rostro se resetea la variable estado
@@ -111,7 +112,7 @@ export default function FaceDetect() {
           // Grosor de la linea
           ctxs.lineWidth = 4;
           // Color
-          ctxs.strokeStyle = "red";
+          (request == 0) ? ctxs.strokeStyle = "red" : ctxs.strokeStyle = "green";
           // Puntos de referencia a dibujar
           ctxs.rect(
             element.box.xMin,

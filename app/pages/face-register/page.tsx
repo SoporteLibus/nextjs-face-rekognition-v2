@@ -1,8 +1,8 @@
 "use client"
 import styles from './style/faceregister.module.css'
-import { alertError, alertSuccess } from '@/app/utils';
+import { alertError } from '@/app/utils';
 import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { TfiReload } from "react-icons/tfi";
 import Swal from 'sweetalert2';
@@ -44,9 +44,23 @@ export default function FaceRegister() {
 
   return (
     <main className={styles.main}>
+    <>
+      {/* Elemento de lectura de video */}
+      <Webcam
+        ref={webcamRef}
+        mirrored={false}
+        allowFullScreen={true}
+        videoConstraints={{
+          ...videoConstraints,
+          facingMode
+        }}
+        screenshotFormat="image/jpeg"
+        style={{ width: 800, height: 600, marginTop: 15 }}
+      />
+    </>
       <div className={styles.searchBox}>
         <form onSubmit={sendForm}>
-          <input type="text" value={legajo} onChange={e => setLegajo(e.target.value)}
+          <input type="number" value={legajo} onChange={e => setLegajo(e.target.value)}
             placeholder='N° de legajo' required />
           <button type="submit">
             Cargar
@@ -56,20 +70,6 @@ export default function FaceRegister() {
           </button>
         </form>
       </div>
-      <>
-        {/* Elemento de lectura de video */}
-        <Webcam
-          ref={webcamRef}
-          mirrored={false}
-          allowFullScreen={true}
-          videoConstraints={{
-            ...videoConstraints,
-            facingMode
-          }}
-          screenshotFormat="image/jpeg"
-          style={{ width: 800, height: 600, marginTop: 15 }}
-          />
-    </>
     </main>
   )
 }

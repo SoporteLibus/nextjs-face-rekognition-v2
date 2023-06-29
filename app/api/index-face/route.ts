@@ -35,7 +35,6 @@ export async function POST(request: Request) {
   const resp = await client.send(command)
     .then(data => data)
     .catch((error) => error)
-  console.log(resp)
   if (resp.FaceRecords) {
     console.log("Rostro registrado con exito!")
     return new Response(JSON.stringify({

@@ -1,8 +1,7 @@
 import Swal from "sweetalert2";
-import { UserApi } from "../../types";
 import { Capitalize } from "../capitalize/Capitalize";
 
-export const alertSuccess = (object: UserApi) => {
+export const alertSuccess = (object: any) => {
   const info = `
     Nombre: ${Capitalize(object.name)},
     Legajo: ${object.docket},
@@ -12,7 +11,7 @@ export const alertSuccess = (object: UserApi) => {
   Swal.fire({
     position: 'center',
     icon: 'success',
-    title: 'Validado!',
+    title: (object.mensaje) ? object.mensaje : "Validado!",
     text: info,
     showConfirmButton: false,
     timer: 5500

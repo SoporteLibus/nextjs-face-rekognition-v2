@@ -22,8 +22,7 @@ async function axiosData(object: string) {
   // console.log("cookie>>>",token?.value)
   const res = await axios.put(`${baseURL}/api/v1/rrhh/empleados/fichar/${object}`)
     .then(response => response.data.data)
-    .catch(error => error)
-  console.log(res)
+    .catch(error => error.response.data.data)
   return res
 }
 
@@ -57,30 +56,29 @@ export async function POST(request: Request) {
         // La similitud en la busqueda, el id de rostro, el legajo y la fecha.
         if (data.FaceMatches) {
           console.log("Rostro con coinsidencias!")
-          const id = `${data.FaceMatches[0].Face?.FaceId}`
           const similarity = `${data.FaceMatches[0].Similarity}`
           const docket = `${data.FaceMatches[0].Face?.ExternalImageId}`
           const date = new Date()
           const toDay = date.toLocaleString()
-          return { id, similarity, toDay, docket }
+          return { similarity, toDay, docket }
         }
       })
       .catch(error => error)
     // Validacion a la respuesta de AWS Recognition
     if (resp.docket) {
-      const { id, similarity, toDay, docket }: any = resp
+      const { similarity, toDay, docket }: any = resp
       // Obtencion de informacion de empleados
       const axiosResponse = await axiosData(docket)
       // Validacion de respuesta de la DB
       if (axiosResponse.nombre) {
         console.log("Respuesta a la consulta realizada con exito!")
-        const { nombre }: any = axiosResponse
+        const { nombre, mensaje }: any = axiosResponse
         return new Response(JSON.stringify({
           name: `${nombre}`,
           similarity: similarity,
           docket: `${docket}`,
-          id: id,
-          date: `${toDay}`
+          date: `${toDay}`,
+          mensaje: `${mensaje}`
         }),
         {
           status: 200,
@@ -91,8 +89,8 @@ export async function POST(request: Request) {
       } else {
         console.log("No se pudo obtener informacion de la base de datos!")
         return new Response(JSON.stringify({
-          error: axiosResponse.response.data.error ?
-            axiosResponse.response.data.error :
+          error: axiosResponse.mensaje ?
+            axiosResponse.mensaje :
             "Error en la consulta a la DB"
         }),
         {
