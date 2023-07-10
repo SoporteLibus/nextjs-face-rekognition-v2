@@ -1,11 +1,13 @@
 "use client"
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import * as tf from "@tensorflow/tfjs";
 import '@tensorflow/tfjs-backend-webgl';
 import Webcam from "react-webcam";
 import { MediaPipeFaceMeshTfjsModelConfig, FaceLandmarksDetector } from '@tensorflow-models/face-landmarks-detection';
 import axios from 'axios';
 import { alertError, alertSuccess } from '@/app/utils';
+
+declare var window: any
 
 export default function FaceDetect() {
   // Referencia utilizada para el elemento Webcam
@@ -16,8 +18,9 @@ export default function FaceDetect() {
   let request = 0;
   let estado = 0;
   let count = 0;
-  // const windowWidth: any = window.innerWidth
-  // const windowHeight: any = window.innerHeight
+  const [width, setWidth] = useState(0)
+  const [height, setHeight] = useState(0)
+  const [ratio, setRatio] = useState(0)
 
   // Funcion principal iniciada en el useEffect
   const runFaceLandmark = async () => {
@@ -125,7 +128,8 @@ export default function FaceDetect() {
         });
       }
       
-      // Obtencion del contexto de canvas
+      // Obtencion del contexto de canvas/ const windowWidth: any = window.innerWidth
+  // const windowHeight: any = window.innerHeight
       const ctx = canvasRef.current.getContext("2d");
       // Se toman los parametros del rostro y luego se los pasa al canvas 
       requestAnimationFrame(() => { drawMesh(faces, ctx) });
@@ -134,6 +138,11 @@ export default function FaceDetect() {
 
   // La funcion principal es iniciada al cargar la pagina
   useEffect(() => {
+    const isLandscape = innerHeight <= innerWidth;
+    const ratio = isLandscape ? innerWidth / innerHeight : innerHeight / innerWidth;
+    setRatio(ratio)
+    setWidth(innerWidth);
+    setHeight(innerHeight);
     runFaceLandmark()
   }, []);
 
@@ -144,6 +153,7 @@ export default function FaceDetect() {
       ref={webcamRef}
       mirrored={false}
       screenshotFormat="image/jpeg"
+      videoConstraints={{ facingMode: "user", aspectRatio: ratio }}
       style={{
         position: "absolute",
         top: 0,
@@ -152,7 +162,6 @@ export default function FaceDetect() {
         zIndex: 999,
         width: "100vw",
         height: "100vh",
-        backgroundColor: "Gray"
       }}
       />
       {/* Elemento de recuadro de rostro */}

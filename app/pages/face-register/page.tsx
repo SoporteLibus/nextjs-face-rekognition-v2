@@ -2,10 +2,12 @@
 import styles from './style/faceregister.module.css'
 import { alertError } from '@/app/utils';
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { TfiReload } from "react-icons/tfi";
 import Swal from 'sweetalert2';
+
+declare var window: any
 
 export interface UserApi {
   name: string,
@@ -20,9 +22,13 @@ export default function FaceRegister() {
   const webcamRef = useRef<Webcam>(null)
   const [legajo, setLegajo] = useState("")
   const [facingMode, setFacingMode] = useState("user");
+  const [width, setWidth] = useState(0)
+  const [height, setHeight] = useState(0)
+  const [ratio, setRatio] = useState(0)
 
   const videoConstraints = {
-    facingMode: facingMode
+    facingMode: facingMode,
+    aspectRatio: ratio
   };
 
   const sendForm = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,22 +48,28 @@ export default function FaceRegister() {
       })
   }
 
+  useEffect(() => {
+    const isLandscape = innerHeight <= innerWidth;
+    const ratio = isLandscape ? innerWidth / innerHeight : innerHeight / innerWidth;
+    setRatio(ratio)
+    setWidth(innerWidth);
+    setHeight(innerHeight);
+  }, [])
+  
   return (
-    <main className={styles.main}>
     <>
       {/* Elemento de lectura de video */}
       <Webcam
         ref={webcamRef}
         mirrored={false}
-        allowFullScreen={true}
         videoConstraints={{
           ...videoConstraints,
-          facingMode
+          facingMode,
         }}
+        width={width}
+        height={height}
         screenshotFormat="image/jpeg"
-        style={{ width: 800, height: 600, marginTop: 15 }}
       />
-    </>
       <div className={styles.searchBox}>
         <form onSubmit={sendForm}>
           <input type="number" value={legajo} onChange={e => setLegajo(e.target.value)}
@@ -70,6 +82,6 @@ export default function FaceRegister() {
           </button>
         </form>
       </div>
-    </main>
+    </>
   )
 }

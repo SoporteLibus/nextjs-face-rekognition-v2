@@ -10,11 +10,12 @@
 }
 
 .searchBox {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
     background-color: #ecedf6;
     height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     padding: 4px 12px;
     border-radius: 8px;
 }

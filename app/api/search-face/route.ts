@@ -70,8 +70,8 @@ export async function POST(request: Request) {
       // Obtencion de informacion de empleados
       const axiosResponse = await axiosData(docket)
       // Validacion de respuesta de la DB
-      if (axiosResponse.nombre) {
-        console.log("Respuesta a la consulta realizada con exito!")
+      if (axiosResponse.nombre && axiosResponse.nombre) {
+        console.log("Respuesta a la consulta de la DB realizada con exito!")
         const { nombre, mensaje }: any = axiosResponse
         return new Response(JSON.stringify({
           name: `${nombre}`,
