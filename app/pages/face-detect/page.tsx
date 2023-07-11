@@ -139,10 +139,10 @@ export default function FaceDetect() {
   // La funcion principal es iniciada al cargar la pagina
   useEffect(() => {
     const isLandscape = innerHeight <= innerWidth;
-    const ratio = isLandscape ? innerWidth / innerHeight : innerHeight / innerWidth;
+    const ratio = (innerHeight <= innerWidth) ? innerWidth / innerHeight : innerHeight / innerWidth;
     setRatio(ratio)
-    setWidth(innerWidth);
-    setHeight(innerHeight);
+    setWidth(innerWidth)
+    setHeight(innerHeight)
     runFaceLandmark()
   }, []);
 
@@ -154,14 +154,14 @@ export default function FaceDetect() {
       mirrored={false}
       screenshotFormat="image/jpeg"
       videoConstraints={{ facingMode: "user", aspectRatio: ratio }}
+      width={width}
+      height={height}
       style={{
         position: "absolute",
-        top: 0,
-        left: 0,
         textAlign: "center",
         zIndex: 999,
-        width: "100vw",
-        height: "100vh",
+        width: width,
+        height: height
       }}
       />
       {/* Elemento de recuadro de rostro */}
@@ -171,8 +171,8 @@ export default function FaceDetect() {
           position: "absolute",
           textAlign: "center",
           zIndex: 999,
-          width: "100vw",
-          height: "100vh"
+          width: width,
+          height: height
         }}
       />
     </>

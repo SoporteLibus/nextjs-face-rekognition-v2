@@ -49,9 +49,8 @@ export default function FaceRegister() {
   }
 
   useEffect(() => {
-    const isLandscape = innerHeight <= innerWidth;
-    const ratio = isLandscape ? innerWidth / innerHeight : innerHeight / innerWidth;
-    setRatio(ratio)
+    const ratio = (innerHeight <= innerWidth) ? innerWidth / innerHeight : innerHeight / innerWidth;
+    setRatio(ratio);
     setWidth(innerWidth);
     setHeight(innerHeight);
   }, [])
